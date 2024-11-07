@@ -1,5 +1,12 @@
-import Image from 'next/image';
+import SignIn from '@/components/signIn';
+import { SignOut } from '@/components/signOut';
 
 export default function Home() {
-    return <main>hello</main>;
+    return (
+        <main>
+            <p>hello</p>
+            <SignIn />
+            <SignOut />
+        </main>
+    );
 }
