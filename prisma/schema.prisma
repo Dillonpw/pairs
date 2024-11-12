@@ -85,15 +85,18 @@ model Authenticator {
 //application tables
 
 model Group {
-  id          String        @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   createdById String
-  createdBy   User          @relation(fields: [createdById], references: [id])
+  createdBy   User     @relation(fields: [createdById], references: [id])
   members     GroupMember[]
   tasks       Task[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([name, createdById]) // Composite unique constraint
 }
+
 
 model GroupMember {
   id      String           @id @default(cuid())
