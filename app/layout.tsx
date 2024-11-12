@@ -15,12 +15,14 @@ export default function RootLayout({
         <ClerkProvider>
             <html lang="en">
                 <body>
-                    <SignedOut>
-                        <SignInButton />
-                    </SignedOut>
-                    <SignedIn>
-                        <UserButton />
-                    </SignedIn>
+                    <div className="absolute top-2 right-2">
+                        <SignedOut>
+                            <SignInButton />
+                        </SignedOut>
+                        <SignedIn>
+                            <UserButton />
+                        </SignedIn>
+                    </div>
                     {children}
                 </body>
             </html>
