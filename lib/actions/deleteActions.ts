@@ -1,15 +1,15 @@
 'use server';
-import { auth } from '@/auth';
+import { currentUser } from '@clerk/nextjs/server';
 import prisma from '@/db';
 //TODO this file will contain the individual actions for deleting new groups, tasks etc
 
 export async function deleteGroup(name: string) {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await currentUser();
+    if (!user) {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.id;
+    const userId = user.id;
 
     try {
         const group = await prisma.group.findFirst({
@@ -48,12 +48,12 @@ export async function deleteTask(
     description: string,
     value: number
 ) {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await currentUser();
+    if (!user) {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.id;
+    const userId = user.id;
 
     try {
         const task = await prisma.task.findFirst({

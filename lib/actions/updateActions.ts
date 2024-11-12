@@ -1,15 +1,15 @@
 'use server';
-import { auth } from '@/auth';
+import { currentUser } from '@clerk/nextjs/server';
 import prisma from '@/db';
 import { TaskStatus } from '@prisma/client';
 
 export async function updateGroup(name: string, newName: string) {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await currentUser();
+    if (!user) {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.id;
+    const userId = user.id;
 
     try {
         const group = await prisma.group.findFirst({
@@ -42,12 +42,12 @@ export async function updateTask(
     groupId: string,
     updates: { description?: string; value?: number; status?: TaskStatus } // Ensure `status` is of type `TaskStatus`
 ) {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await currentUser();
+    if (!user) {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.id;
+    const userId = user.id;
 
     try {
         const task = await prisma.task.findFirst({
@@ -77,12 +77,10 @@ export async function updateTask(
 }
 
 export async function markTaskComplete(taskId: string) {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await currentUser();
+    if (!user) {
         throw new Error('Unauthorized');
     }
-
-    const userId = session.user.id;
 
     try {
         const updatedTask = await prisma.task.update({
