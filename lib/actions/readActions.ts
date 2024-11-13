@@ -1,14 +1,14 @@
 'use server';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth } from '@/auth';
 import prisma from '@/db';
 
 export async function readGroup(name: string) {
-    const user = await currentUser();
-    if (!user) {
+    const session = await auth();
+    if (!session || !session.user) {
         throw new Error('Unauthorized');
     }
 
-    const userId = user.id;
+    const userId = session.user.id;
 
     try {
         const group = await prisma.group.findFirst({
@@ -34,12 +34,12 @@ export async function readGroup(name: string) {
 }
 
 export async function readTask(name: string, groupId: string) {
-    const user = await currentUser();
-    if (!user) {
+    const session = await auth();
+    if (!session || !session.user) {
         throw new Error('Unauthorized');
     }
 
-    const userId = user.id;
+    const userId = session.user.id;
 
     try {
         const task = await prisma.task.findFirst({
@@ -62,12 +62,12 @@ export async function readTask(name: string, groupId: string) {
 }
 
 export async function listGroups() {
-    const user = await currentUser();
-    if (!user) {
+    const session = await auth();
+    if (!session || !session.user) {
         throw new Error('Unauthorized');
     }
 
-    const userId = user.id;
+    const userId = session.user.id;
 
     try {
         const groups = await prisma.group.findMany({
@@ -88,10 +88,12 @@ export async function listGroups() {
 }
 
 export async function listTasks(groupId: string) {
-    const user = await currentUser();
-    if (!user) {
+    const session = await auth();
+    if (!session || !session.user) {
         throw new Error('Unauthorized');
     }
+
+
 
     try {
         const tasks = await prisma.task.findMany({

@@ -1,14 +1,14 @@
 'use server';
-import { currentUser } from '@clerk/nextjs/server';
 import prisma from '@/db';
+import { auth } from '@/auth';
 
 export async function createGroup(name: string) {
-    const user = await currentUser();
-    if (!user) {
+    const session = await auth();
+    if (!session || !session.user) {
         throw new Error('Unauthorized');
     }
 
-    const userId = user.id;
+    const userId = session.user.id as string;
 
     try {
         const group = await prisma.group.create({
@@ -39,12 +39,12 @@ export async function createTask(
     description: string,
     value: number
 ) {
-    const user = await currentUser();
-    if (!user) {
+    const session = await auth();
+    if (!session || !session.user) {
         throw new Error('Unauthorized');
     }
 
-    const userId = user.id;
+    const userId = session.user.id as string;
 
     try {
         const task = await prisma.task.create({
