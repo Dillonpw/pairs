@@ -1,21 +1,25 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// auth tables 
+generator client {
+  provider = "prisma-client-js"
+}
+
 model User {
-  id            String  @id @default(cuid())  // Use Clerk's `id` instead of `cuid()` if feasible
-  clerkId       String  @unique               // Store Clerk's unique user ID
+  id            String          @id @default(cuid())
   name          String?
-  email         String  @unique
+  email         String          @unique
+  emailVerified DateTime?
   image         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  // Optional for WebAuthn support
+  Authenticators Authenticator[]
+  
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
   // Relations
   Group          Group[]
@@ -24,8 +28,64 @@ model User {
   TaskAssignment TaskAssignment[]
 }
 
+model Account {
+  id                 String    @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
 
-//application tables
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String    @id @default(cuid())
+  sessionToken String    @unique
+  userId       String
+  expires      DateTime
+  
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+
+// Application tables
 
 model Group {
   id          String   @id @default(cuid())
@@ -40,13 +100,13 @@ model Group {
   @@unique([name, createdById])
 }
 
-
 model GroupMember {
   id      String           @id @default(cuid())
   groupId String
   userId  String
   role    GroupRole
   points  Int              @default(0)
+  
   group   Group            @relation(fields: [groupId], references: [id])
   user    User             @relation(fields: [userId], references: [id])
   tasks   TaskAssignment[]
@@ -81,9 +141,10 @@ model TaskAssignment {
   userId        String
   status        TaskStatus   @default(INCOMPLETE)
   completedAt   DateTime?
+  
   task          Task         @relation(fields: [taskId], references: [id])
   user          User         @relation(fields: [userId], references: [id])
-  GroupMember   GroupMember? @relation(fields: [groupMemberId], references: [id])
+  groupMember   GroupMember? @relation(fields: [groupMemberId], references: [id])
   groupMemberId String?
 
   @@unique([taskId, userId])
