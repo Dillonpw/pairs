@@ -1,5 +1,3 @@
-'use client';
-
 import { signIn } from '@/auth';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,10 +10,6 @@ import {
 import { Chrome } from 'lucide-react';
 
 export default function SignIn() {
-    const handleSignIn = async () => {
-        await signIn('google', { redirectTo: '/pairs' });
-    };
-
     return (
         <main className="flex items-center justify-center min-h-screen p-4">
             <Card className="w-full max-w-md">
@@ -28,7 +22,13 @@ export default function SignIn() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form action={handleSignIn} className="space-y-4">
+                    <form
+                        action={async () => {
+                            'use server';
+                            await signIn('google', { redirectTo: '/pairs' });
+                        }}
+                        className="space-y-4"
+                    >
                         <Button
                             type="submit"
                             className="w-full bg-[#4285F4] hover:bg-[#4285F4]/90 text-white transition-all duration-200 shadow-lg hover:shadow-xl"
