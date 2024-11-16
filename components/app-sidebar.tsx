@@ -1,7 +1,6 @@
 'use client';
 
-import { useSession } from "next-auth/react";
-import { SignOut } from "@/components/sign-out";
+import { useSession, signOut } from "next-auth/react";
 import {
     Sidebar,
     SidebarContent,
@@ -36,6 +35,11 @@ import {
 export function AppSidebar() {
     const { state } = useSidebar();
     const { data: session, status } = useSession();
+
+    const handleSignOut = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        await signOut({ callbackUrl: '/' });
+    };
 
     const items = [
         { title: 'Home', url: '/', icon: HomeIcon },
@@ -120,10 +124,13 @@ export function AppSidebar() {
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
-                                        <div className="flex items-center w-full">
+                                        <button
+                                            onClick={handleSignOut}
+                                            className="w-full text-left flex items-center"
+                                        >
                                             <LogOut className="mr-2 h-4 w-4" />
-                                            <SignOut />
-                                        </div>
+                                            <span>Log out</span>
+                                        </button>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
