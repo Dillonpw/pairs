@@ -1,6 +1,7 @@
 import './globals.css';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
+import { Providers } from '@/components/providers';
 
 export default function RootLayout({
     children,
@@ -10,13 +11,13 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                    <SidebarProvider>
-                        <AppSidebar />
-                        <main>
-                            <SidebarTrigger />
-                            {children}
-                        </main>
-                    </SidebarProvider>
+                <Providers>
+                    <AppSidebar />
+                    <main>
+                        <SidebarTrigger />
+                        {children}
+                    </main>
+                </Providers>
             </body>
         </html>
     );

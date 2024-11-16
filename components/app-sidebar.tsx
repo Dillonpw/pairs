@@ -1,5 +1,7 @@
 'use client';
 
+import { useSession } from "next-auth/react";
+import { SignOut } from "@/components/sign-out";
 import {
     Sidebar,
     SidebarContent,
@@ -33,6 +35,7 @@ import {
 
 export function AppSidebar() {
     const { state } = useSidebar();
+    const { data: session, status } = useSession();
 
     const items = [
         { title: 'Home', url: '/', icon: HomeIcon },
@@ -71,37 +74,33 @@ export function AppSidebar() {
                 }`}
             >
                 <SidebarMenu>
-                    {/*  <SidebarMenuItem>
-                       {session?.user ? (
+                    <SidebarMenuItem>
+                        {status === "loading" ? (
+                            <div className="flex items-center gap-2 p-2">
+                                <div className="h-6 w-6 animate-pulse rounded-full bg-gray-200" />
+                                <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
+                            </div>
+                        ) : session?.user ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <SidebarMenuButton className="w-full justify-between">
                                         <div className="flex items-center gap-2">
                                             <Avatar className="h-6 w-6">
                                                 <AvatarImage
-                                                    src={
-                                                        session.user?.image ||
-                                                        undefined
-                                                    }
-                                                    alt={
-                                                        session.user?.name ||
-                                                        'User'
-                                                    }
+                                                    src={session.user.image || undefined}
+                                                    alt={session.user.name || 'User'}
                                                 />
                                                 <AvatarFallback>
-                                                    {session.user?.name?.[0] ||
-                                                        'U'}
+                                                    {session.user.name?.[0] || 'U'}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <span className="truncate">
-                                                {session.user?.name || 'User'}
+                                                {session.user.name || 'User'}
                                             </span>
                                         </div>
                                         <ChevronUp
                                             className={`ml-auto transition-transform duration-300 ${
-                                                state === 'collapsed'
-                                                    ? 'rotate-180'
-                                                    : ''
+                                                state === 'collapsed' ? 'rotate-180' : ''
                                             }`}
                                         />
                                     </SidebarMenuButton>
@@ -120,23 +119,15 @@ export function AppSidebar() {
                                             <span>Account</span>
                                         </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <form
-                                            action="/api/auth/signout"
-                                            method="post"
-                                        >
-                                            <button
-                                                type="submit"
-                                                className="w-full text-left flex items-center"
-                                            >
-                                                <LogOut className="mr-2 h-4 w-4" />
-                                                <span>Log out</span>
-                                            </button>
-                                        </form>
+                                    <DropdownMenuItem>
+                                        <div className="flex items-center w-full">
+                                            <LogOut className="mr-2 h-4 w-4" />
+                                            <SignOut />
+                                        </div>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                        ) : ( 
+                        ) : (
                             <SidebarMenuButton asChild>
                                 <Link
                                     href="/sign-in"
@@ -146,11 +137,12 @@ export function AppSidebar() {
                                     <span>Log in</span>
                                 </Link>
                             </SidebarMenuButton>
-                        )} 
+                        )}
                     </SidebarMenuItem>
-                    */}
                 </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
     );
 }
+
+export default AppSidebar;

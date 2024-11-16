@@ -25,10 +25,13 @@ export function SignIn() {
                     <form
                         action={async () => {
                             'use server';
-                            await signIn('google');
+                            await signIn('google', { redirectTo: '/' });
                         }}
                     >
-                        <button type="submit">Signin with Google</button>
+                        <Button type="submit">
+                            {' '}
+                            <Chrome /> Signin with Google
+                        </Button>
                     </form>
                     <p className="mt-4 text-sm text-center text-gray-500">
                         By signing in, you agree to our{' '}
