@@ -25,7 +25,7 @@ export default function SignIn() {
                     <form
                         action={async () => {
                             'use server';
-                            await signIn('google', { redirectTo: '/pairs' });
+                            await signIn('google');
                         }}
                         className="space-y-4"
                     >
