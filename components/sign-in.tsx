@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card';
 import { Chrome } from 'lucide-react';
 
-export default function SignIn() {
+export function SignIn() {
     return (
         <main className="flex items-center justify-center min-h-screen p-4">
             <Card className="w-full max-w-md">
@@ -27,15 +27,8 @@ export default function SignIn() {
                             'use server';
                             await signIn('google');
                         }}
-                        className="space-y-4"
                     >
-                        <Button
-                            type="submit"
-                            className="w-full bg-[#4285F4] hover:bg-[#4285F4]/90 text-white transition-all duration-200 shadow-lg hover:shadow-xl"
-                        >
-                            <Chrome className="mr-2 h-5 w-5" />
-                            Sign in with Google
-                        </Button>
+                        <button type="submit">Signin with Google</button>
                     </form>
                     <p className="mt-4 text-sm text-center text-gray-500">
                         By signing in, you agree to our{' '}
