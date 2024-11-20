@@ -22,7 +22,7 @@ export function SignIn() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form
+                    <form className='flex flex-col gap-4'
                         action={async () => {
                             'use server';
                             await signIn('google', { redirectTo: '/' });

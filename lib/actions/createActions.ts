@@ -9,6 +9,7 @@ export interface Group {
     createdAt: Date;
     updatedAt: Date;
   }
+  
   export async function createGroup(name: string): Promise<Group> {
     const session = await auth();
     if (!session || !session.user) {

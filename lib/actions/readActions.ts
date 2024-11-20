@@ -2,7 +2,7 @@
 import { auth } from '@/auth';
 import prisma from '@/db';
 
-export async function readGroup(name: string) {
+export async function readGroups() {
     const session = await auth();
     if (!session || !session.user) {
         throw new Error('Unauthorized');
@@ -11,9 +11,8 @@ export async function readGroup(name: string) {
     const userId = session.user.id;
 
     try {
-        const group = await prisma.group.findFirst({
+        const groups = await prisma.group.findMany({
             where: {
-                name,
                 createdById: userId,
             },
             include: {
@@ -22,14 +21,10 @@ export async function readGroup(name: string) {
             },
         });
 
-        if (!group) {
-            throw new Error('Group not found');
-        }
-
-        return group;
+        return groups;
     } catch (error) {
-        console.error('Error reading group:', error);
-        throw new Error('Could not read group');
+        console.error('Error reading groups:', error);
+        throw new Error('Could not read groups');
     }
 }
 
