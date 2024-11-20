@@ -1,15 +1,8 @@
 'use server';
 import prisma from '@/db';
 import { auth } from '@/auth';
+import { Group } from '@/types'; 
 
-export interface Group {
-    id: string;
-    name: string;
-    createdById: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-  
   export async function createGroup(name: string): Promise<Group> {
     const session = await auth();
     if (!session || !session.user) {

@@ -1,7 +1,7 @@
 import { SignIn } from '@/components/sign-in';
-import { SignOut } from '@/components/sign-out';
 import { auth } from '@/auth';
 import { readGroups } from '@/lib/actions/readActions';
+import { Group } from '@/types';
 
 export default async function AccountPage() {
     const session = await auth();
@@ -13,7 +13,7 @@ export default async function AccountPage() {
             </main>
         );
 
-    let groups = [];
+    let groups: Group[] = [];
     try {
         groups = await readGroups();
     } catch (error) {
@@ -24,8 +24,7 @@ export default async function AccountPage() {
     return (
         <main>
             <p>Hello, {session.user.name}!</p>
-            <SignOut />
-            
+            {/* make own component */}
             <div>
                 <h2>Your Groups</h2>
                 {groups.length === 0 ? (
@@ -33,8 +32,8 @@ export default async function AccountPage() {
                 ) : (
                     <ul className="space-y-2">
                         {groups.map((group) => (
-                            <li 
-                                key={group.id} 
+                            <li
+                                key={group.id}
                                 className="border p-3 rounded-md"
                             >
                                 <div className="font-bold">{group.name}</div>
